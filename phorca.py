@@ -1,11 +1,14 @@
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
 import random
 from subprocess import call
 
+# banner com a logo
 def banner() :
     call ("clear")
     call(["figlet", "-c", "Jogo da Forca"])
-    print "\nPara sair, digite: sair"
+
 
 # Nome de arquivo
 #fname = 'wordlist.small.txt'
@@ -17,24 +20,27 @@ wordlist = list(fh)
 
 # escolhe palavra aleatoria com a biblioteca random
 palavra = random.choice(wordlist)
+
 # remove espaços no final do arquivo
 palavra = palavra.strip()
+
+#transforma em lowercase
+palavra = palavra.lower()
+
+# armazena as letras que o usuário já digitou
+entradas = list()
 
 # variavel para armazenar cada entrada do usuario
 mascara = list()
 
 # adiciona na mascara os underlines para o usuario preencher
 for letra in palavra:
-
-    if letra == '-':
-        mascara.append("-")
-    else:
-        mascara.append("_")
+    mascara.append("_")
 
 # calcula o tamanho da palavra para dar o número de tentativas
 tentativasMax = int ( len(palavra) + len(palavra)/2 )
 
-# armazena o tamanho para mostrar ao usuário quantas letras
+# armazena o tamanho em char para mostrar ao usuário quantas letras
 # possui a palavra
 tamanho = str(len(palavra))
 
@@ -42,29 +48,42 @@ tamanho = str(len(palavra))
 tentativas = 0
 ganhou = False
 
-while tentativas <= tentativasMax:
+while tentativas < tentativasMax:
+
     # imprime o banner para o usuario
     banner()
 
-    # print palavra
+    # testa se o usuário ganhou o jogo
+    if mascara.count("_") == 0:
+        ganhou = True
+        break
+
     restantes = tentativasMax - tentativas
 
+    # Converte as tentativas em char para mostrar ao usuario
     charRestantes = str(restantes)
-    print "A palavra tem " + tamanho + " letras\n"
-    print "Restam ainda " + charRestantes + " tentativas"
-    print mascara
-    inp = raw_input("\nEntre com uma letra:  ")
-    tentativas = tentativas + 1
+    print ('Para sair, digite: sair')
+    print ("A palavra tem ", tamanho, "letras\n")
+    print ("Restam ainda ", charRestantes , "tentativas")
+
+    # o * imprime a máscara sem os '_'
+    print (*mascara)
+    inp = input("\nEntre com uma letra:  ")
+
+    if inp in entradas:
+        var = input("\nLetra já digitada, tente outra.\n\nDigite ENTER para continuar...")
+        continue
+    else:
+        entradas.append(inp)
+
 
     # Condicoes de saida do programa
-
     if inp == "sair":
         break
 
     if len(inp) > 1:
-        print "Entrada inválida!"
+        print ("Entrada inválida!")
         continue
-
 
     i = 0
     for letra in palavra:
@@ -72,18 +91,16 @@ while tentativas <= tentativasMax:
             mascara[i] = inp
         i = i + 1
 
-    if mascara.count("_") == 0:
-        ganhou = True
-        break
+    tentativas = tentativas + 1
 
 banner()
 if ganhou is True:
-    print "GANHOU! \o/"
+    print ("\n\nGANHOU! \o/")
 
 else:
-    print "PERDEU... :("
+    print ("\n\nPERDEU... :(")
 
-print "\nA palavra era: " + palavra
+print ("\nA palavra era: ",palavra)
 
 
 
